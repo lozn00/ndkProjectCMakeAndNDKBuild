@@ -1,20 +1,15 @@
-NDK_DEBUG=1
-LOCAL_PATH := $(call my-dir)
 
-#include $(CLEAR_VARS)
-#LOCAL_MODULE    := hook
-#LOCAL_SRC_FILES := inlineHook.c relocate.c
-#include $(BUILD_STATIC_LIBRARY)
+define walk
+$(wildcard $(1)) $(foreach e, $(wildcard $(1)/*), $(call walk, $(e)))
+endef
 
-
-
-
+$(warning "projectdir ${NDK_PROJECT_PATH}")#通常是 绝对路径 项目名称/app/src/main
 
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
-PROJECT_PATH = $(LOCAL_PATH)/..
+PROJECT_PATH = $(LOCAL_PATH)
 
-LOCAL_MODULE    := hook
+LOCAL_MODULE    := native-lib
 LOCAL_LDFLAGS += -shared
 
 #添加模块使用宏定义
@@ -24,36 +19,35 @@ LOCAL_CFLAGS += -DMODULE_FLAG
 MY_HEADER_PATH += $(PROJECT_PATH)
 
 #添加需要包含的头文件路径，不会向下遍历，最后一个不要加\号
-LOCAL_C_INCLUDES += $(PROJECT_PATH)../include
+$(warning "PROJECT_PATH $(PROJECT_PATH)")
+otherdir:=D:/env/android_sdk/ndk-bundle/sysroot/usr/include
+#LOCAL_C_INCLUDES+= $(call walk, ${otherdir})
+LOCAL_C_INCLUDES += $(PROJECT_PATH)/include  ${otherdir}/x86_64-linux-android/asm/hwcap.h ${otherdir}/x86_64-linux-android/asm/ptrace.h
+#D:/env/android_sdk/ndk-bundle/sysroot/usr/include\arm-linux-androideabi/asm/
 #LOCAL_C_INCLUDES += $(shell find $(MY_HEADER_PATH) -type d) 只适合linux
-$(warning "module name: $(LOCAL_MODULE)->LOCAL_C_INCLUDES =$(LOCAL_C_INCLUDES)")
+$(warning " c include head files =$(LOCAL_C_INCLUDES)")
 
 # 扫描目录下的所有源文件，会向下依次遍历
 MY_FILES_PATH  := $(PROJECT_PATH)
 # 添加指定C/CPP文件，只添加某个
 $(warning "local_path $(LOCAL_PATH)")
-
 #LOCAL_SRC_FILES += $(LOCAL_PATH)/inlineHook.c $(LOCAL_PATH)/relocate.c
-
 MY_FILES_SUFFIX := %.cpp %.c %.cc
 # My_All_Files := $(foreach src_path,$(MY_FILES_PATH), $(shell find "$(src_path)" -type f) )只适合linux find -type f
+
+My_All_Files := $(call walk, $(LOCAL_PATH))
+
 My_All_Files := $(My_All_Files:$(MY_CPP_PATH)/./%=$(MY_CPP_PATH)%)
 MY_SRC_LIST  := $(filter $(MY_FILES_SUFFIX),$(My_All_Files))
 MY_SRC_LIST  := $(MY_SRC_LIST:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES += $(MY_SRC_LIST)
 $(warning "dirs->$(LOCAL_MODULE): LOCAL_SRC_FILES =$(LOCAL_SRC_FILES)")
-
-
-
 #LOCAL_SRC_FILES += $(LOCAL_PATH)inlineHook.c $(LOCAL_PATH)relocate.c
-
 #添加需要链接的静态库
 LOCAL_STATIC_LIBRARIES  :=
-
 #添加需要链接的动态库
 LOCAL_SHARED_LIBRARIES  :=
 $(warning "$(LOCAL_MODULE): LOCAL_SHARED_LIBRARIES=$(LOCAL_SHARED_LIBRARIES)")
-
 #添加需要链接的系统库，如ndk编译，需要链接的log/android等
 LOCAL_LDLIBS    += -llog -landroid -lc
 
@@ -61,10 +55,8 @@ LOCAL_LDLIBS    += -llog -landroid -lc
 include $(BUILD_SHARED_LIBRARY)
 
 
-
-
 #include $(CLEAR_VARS)
-#LOCAL_MODULE    := hook
+#LOCAL_MODULE    := native-lib
 #LOCAL_SRC_FILES := inlineHook.c relocate.c
 
 #BUILD_STATIC_LIBRARY：编译为静态库。

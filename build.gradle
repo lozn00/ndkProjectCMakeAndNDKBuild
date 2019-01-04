@@ -27,5 +27,5 @@ task clean(type: Delete) {
 }
 
 ext{
-    USE_CMAKE=true
+    USE_CMAKE=false
 }
