@@ -63,7 +63,7 @@ include $(BUILD_SHARED_LIBRARY)
 #BUILD_SHARED_LIBRARY ：编译为动态库
 #BUILD_EXECUTABLE：编译为Native C可执行程序
 
-
+LOCAL_LDLIBS:=-L$(SYSROOT)/usr/lib -llog
 a:=aaaaa
 b:=${a}
 a:=a1

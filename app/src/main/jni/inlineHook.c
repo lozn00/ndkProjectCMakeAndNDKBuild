@@ -16,7 +16,7 @@ created time: 2015-11-30
  #include <asm/ptrace.h>
 #include <sys/wait.h>
 #include <sys/ptrace.h>
-//#include <arm-linux-androideabi/asm/ptrace.h>
+#include <asm/ptrace.h>
 
 #include "relocate.h"
 #include "include/inlineHook.h"

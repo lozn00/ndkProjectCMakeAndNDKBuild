@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "cn.qssq666.ndkhook"
-        minSdkVersion 23
+        minSdkVersion 14
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -13,6 +13,23 @@ android {
             cmake {
                 cppFlags "-std=c++11 -frtti -fexceptions"
             }
+            ndkBuild {
+                cppFlags " "
+//                arguments "-v"
+//                cppFlags "-std=c++11  "
+            }
+        }
+
+        /*externalNativeBuild {
+          ndkBuild/cmake {
+              // cFlags '-w -std=gnu++11 -fpermissive -DDEBUG -O0' c编译选项
+              // cppFlags "-D__STDC_FORMAT_MACROS" c++编译选项
+              // arguments "-DANDROID_ARM_NEON=TRUE", "-DANDROID_TOOLCHAIN=clang"
+          }
+      }*/
+        ndk {
+            moduleName 'jnitest'
+            abiFilters 'armeabi-v7a'
         }
     }
     buildTypes {
