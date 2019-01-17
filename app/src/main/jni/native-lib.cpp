@@ -174,6 +174,10 @@ JNICALL Java_cn_qssq666_ndkhook_MainActivity_stringFromJNI(JNIEnv *env, jobject 
 //    LOGW("hook resut %d", hook());
     puts("aaaaa");
     int hookResult = hook();
+    puts("hook after1");
+    puts("hook after2");
+    puts("hook after3");
+    puts("hook after4");
     FILE *fp;
     fp = fopen("/proc/self/maps", "r");
     char buffer[2048];
@@ -216,8 +220,10 @@ JNICALL Java_cn_qssq666_ndkhook_MainActivity_stringFromJNI(JNIEnv *env, jobject 
     if (addr == NULL) {
         LOGW("libc so mkdir find fail");
     } else {
-        LOGW("libc so mkdir find succ %#x",addr);
+        LOGW("libc so mkdir find succ %#x", addr);
     }
+
+//    MSHookFunction(addr, new_func, old_func);
 
     if (access("/sdcard/qssq666/a.txt", W_OK) == 0) {
 
